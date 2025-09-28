@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+
+    <title>Interactive Birthday Website</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Arial", sans-serif;
+      }
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        background: black;
+        color: white;
+      }
+      .page {
+        display: none;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+      }
+      .active {
+        display: flex;
+      }
+      #startPage {
+        background: #222;
+        font-size: 2rem;
+        cursor: pointer;
+      }
+      #buttonPage {
+        background: #000;
+        position: relative;
+      }
+      #pressBtn {
+        font-size: 3rem;
+        padding: 2rem 4rem;
+        background-color: red;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 20px;
+        position: relative;
+        z-index: 1;
+      }
+      #emoji {
+        font-size: 5rem;
+        position: absolute;
+        top: -100px;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 2;
+      }
+      .animate-smash {
+        animation: smashDown 0.6s forwards;
+      }
+      @keyframes smashDown {
+        0% {
+          top: -100px;
+          opacity: 1;
+        }
+        100% {
+          top: 50%;
+          transform: translate(-50%, -50%);
+          opacity: 1;
+        }
+      }
+      #finalPage {
+        background: black;
+        color: white;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+      }
+      #finalPage img {
+        width: 300px;
+        height: auto;
+        transition: opacity 1s ease-in-out;
+        z-index: 3;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+      }
+      #birthdayText {
+        font-family: "Cursive", cursive;
+        font-size: 3rem;
+        margin-top: 20px;
+        z-index: 3;
+        white-space: nowrap;
+        border-right: 4px solid white;
+        overflow: hidden;
+        width: 0;
+        animation: typewriter 4s steps(15) forwards,
+          blinkCaret 0.75s step-end infinite;
+      }
+      @keyframes typewriter {
+        from {
+          width: 0;
+        }
+        to {
+          width: 36ch;
+        } /* length of "Happy Birthday!" */
+      }
+      @keyframes blinkCaret {
+        50% {
+          border-color: transparent;
+        }
+        100% {
+          border-color: white;
+        }
+      }
+      .background-emojis {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 1;
+      }
+      .background-emojis span {
+        position: absolute;
+        font-size: 2rem;
+        animation: float 3s ease-in-out infinite alternate;
+      }
+      @keyframes float {
+        0% {
+          transform: translateY(0);
+        }
+        100% {
+          transform: translateY(-20px);
+        }
+      }
+      /* Fireworks container */
+      #fireworks {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 2;
+      }
+      /* Firework particle */
+      .firework {
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        background: radial-gradient(
+          circle,
+          #fff,
+          #ff7300,
+          #e74c3c,
+          #00bb00,
+          #0000ff
+        );
+        border-radius: 50%;
+        opacity: 0;
+        animation-name: explode, fadeout;
+        animation-timing-function: ease-out;
+        animation-fill-mode: forwards;
+      }
+      @keyframes explode {
+        0% {
+          transform: translate(0, 0) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(var(--x), var(--y)) scale(0.3);
+          opacity: 0;
+        }
+      }
+      @keyframes fadeout {
+        0% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Page 1 -->
+    <!-- <div class="page active" id="startPage" onclick="goToPage('buttonPage')">
+      Click to Start
+    </div> -->
+    <div class="page active" id="startPage" onclick="enterFullscreenAndStart()">
+      Click to Start
+    </div>
+
+    <script>
+      function enterFullscreenAndStart() {
+        // Try to request fullscreen
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen();
+        } else if (document.documentElement.webkitRequestFullscreen) {
+          // Safari
+          document.documentElement.webkitRequestFullscreen();
+        } else if (document.documentElement.msRequestFullscreen) {
+          // Old IE/Edge
+          document.documentElement.msRequestFullscreen();
+        }
+
+        // Then go to the button page
+        goToPage("buttonPage");
+      }
+    </script>
+
+    <!-- Page 2 -->
+    <div class="page" id="buttonPage">
+      <button id="pressBtn" onclick="smashButton()">PRESS</button>
+      <div id="emoji">👡</div>
+      <!-- ⚽ Change emoji here if needed -->
+      <audio id="impactSound" src="Smash Plain.mp3" preload="auto"></audio>
+    </div>
+
+    <!-- Page 3 -->
+    <div class="page" id="finalPage">
+      <div id="fireworks"></div>
+      <div class="background-emojis" id="emojiContainer"></div>
+      <img
+        id="birthdayImg"
+        src="https://via.placeholder.com/300x200.png?text=Pic+1"
+        alt="Birthday"
+      />
+      <div id="birthdayText">Happy Birthday Chugli , Protibondhi! 🐒🐒</div>
+      <audio
+        id="birthdayMusic"
+        src="conversion_V4.mp3"
+        preload="auto"
+        loop
+      ></audio>
+      <!-- 🎵 Replace the src above with your own birthday music mp3 -->
+    </div>
+
+    <!-- Confetti library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+    <script>
+      function goToPage(pageId) {
+        document
+          .querySelectorAll(".page")
+          .forEach((page) => page.classList.remove("active"));
+        document.getElementById(pageId).classList.add("active");
+
+        // Pause music if leaving finalPage
+        if (pageId !== "finalPage") {
+          document.getElementById("birthdayMusic").pause();
+        }
+      }
+
+      function smashButton() {
+        const emoji = document.getElementById("emoji");
+        const btn = document.getElementById("pressBtn");
+        const sound = document.getElementById("impactSound");
+
+        emoji.classList.remove("animate-smash");
+        void emoji.offsetWidth;
+        emoji.classList.add("animate-smash");
+
+        sound.currentTime = 0;
+        sound.play();
+
+        btn.style.transform = "scale(0.95)";
+        setTimeout(() => (btn.style.transform = "scale(1)"), 300);
+
+        setTimeout(() => {
+          goToPage("finalPage");
+          startFinalPageSequence();
+          emoji.classList.remove("animate-smash");
+          emoji.style.opacity = 0;
+        }, 1200);
+      }
+
+      function startFinalPageSequence() {
+        scatterEmojis();
+        launchConfetti();
+        startFireworks();
+        playBirthdayMusic();
+
+        const img = document.getElementById("birthdayImg");
+        // Show Lol1 immediately
+        img.src = "Lol1.jpg";
+
+        // Show Lol2 after 14 seconds
+        setTimeout(() => {
+          img.src = "Lol2.jpg";
+        }, 14000);
+
+        // Show Lol3 after 28 seconds
+        setTimeout(() => {
+          img.src = "Lol3.jpg";
+        }, 28000);
+        // Show Joker after 42 seconds
+        setTimeout(() => {
+          img.src = "Joker.png";
+        }, 42000);
+        // Reset typewriter animation
+        const text = document.getElementById("birthdayText");
+        text.style.animation = "none";
+        void text.offsetWidth; // trigger reflow
+        text.style.animation = null;
+
+        // 10 seconds before going back to start
+        setTimeout(() => {
+          stopFireworks();
+          goToPage("startPage");
+        }, 69000);
+      }
+
+      function scatterEmojis() {
+        const container = document.getElementById("emojiContainer");
+        container.innerHTML = "";
+        const emojiList = [
+          "🎉",
+          "🎆",
+          "🎇",
+          "🎈",
+          "🥳",
+          "🎊",
+          "🤮",
+          "💩",
+          "🤡",
+        ];
+
+        for (let i = 0; i < 100; i++) {
+          const span = document.createElement("span");
+          span.textContent =
+            emojiList[Math.floor(Math.random() * emojiList.length)];
+          span.style.top = Math.floor(Math.random() * 90) + "%";
+          span.style.left = Math.floor(Math.random() * 90) + "%";
+          container.appendChild(span);
+        }
+      }
+
+      function playBirthdayMusic() {
+        const music = document.getElementById("birthdayMusic");
+        music.currentTime = 0;
+        music.volume = 0.9;
+        music.play();
+      }
+
+      // Confetti (canvas-confetti) from earlier
+      function launchConfetti() {
+        const duration = 10 * 1000;
+        const end = Date.now() + duration;
+
+        const colors = ["#bb0000", "#ffffff", "#00bb00", "#ffbb00", "#0000ff"];
+
+        const canvas = document.getElementById("confetti-canvas");
+        const confettiInstance = confetti.create(canvas, { resize: true });
+
+        (function frame() {
+          confettiInstance({
+            particleCount: 5,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            colors: colors,
+          });
+          confettiInstance({
+            particleCount: 5,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            colors: colors,
+          });
+
+          if (Date.now() < end) {
+            requestAnimationFrame(frame);
+          }
+        })();
+      }
+
+      /* Fireworks animation */
+
+      let fireworksInterval;
+
+      function createFireworkParticle(x, y, angle, distance, delay) {
+        const colors = ["#fff", "#ff7300", "#e74c3c", "#00bb00", "#0000ff"];
+        const fw = document.createElement("div");
+        fw.classList.add("firework");
+        fw.style.top = y + "px";
+        fw.style.left = x + "px";
+
+        // Assign a random color from the colors array
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        fw.style.background = `radial-gradient(circle, ${color}, ${color})`;
+
+        // Calculate target x and y using angle and distance
+        const rad = (angle * Math.PI) / 180;
+        const targetX = distance * Math.cos(rad);
+        const targetY = distance * Math.sin(rad);
+        fw.style.setProperty("--x", `${targetX}px`);
+        fw.style.setProperty("--y", `${targetY}px`);
+        fw.style.animationDuration = "800ms, 800ms";
+        fw.style.animationDelay = delay + "ms";
+
+        document.getElementById("fireworks").appendChild(fw);
+
+        // Remove particle after animation
+        setTimeout(() => fw.remove(), 800 + delay);
+      }
+
+      function explodeFirework(x, y) {
+        const particlesCount = 50;
+        for (let i = 0; i < particlesCount; i++) {
+          const angle = (360 / particlesCount) * i;
+          const distance = 80 + Math.random() * 20;
+          const delay = Math.random() * 200;
+          createFireworkParticle(x, y, angle, distance, delay);
+        }
+      }
+
+      function startFireworks() {
+        const container = document.getElementById("fireworks");
+        container.innerHTML = "";
+        fireworksInterval = setInterval(() => {
+          // Random position inside container
+          const rect = container.getBoundingClientRect();
+          const x = Math.random() * rect.width;
+          const y = Math.random() * rect.height * 0.6; // upper 60% of screen
+          explodeFirework(x, y);
+        }, 500);
+      }
+
+      function stopFireworks() {
+        clearInterval(fireworksInterval);
+        document.getElementById("fireworks").innerHTML = "";
+      }
+    </script>
+    <script>
+      setTimeout(() => {
+        window.location.href = "about:blank";
+      }, 69000); // auto-close after 60s
+    </script>
+  </body>
+</html>

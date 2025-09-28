@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Birthday Card</title>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #ffeef5;
+        font-family: "Comic Sans MS", cursive, sans-serif;
+      }
+      .card {
+        width: 1000px;
+        height: 400px;
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        padding: 20px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        animation: float 3s ease-in-out infinite;
+      }
+      .card h2 {
+        color: #ff6fae;
+        margin: 50px 0;
+        font-size: 50px;
+      }
+      .card p {
+        color: #444;
+        font-size: 30px;
+        margin: 5px 0 15px;
+      }
+      .btn {
+        display: inline-block;
+        background: #ff6fae;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-size: 30px;
+        font-weight: bold;
+        text-decoration: none;
+        transition: background 0.3s;
+      }
+      .btn:hover {
+        background: #ff4f94;
+      }
+
+      /* 💩 floating emoji */
+      .poop {
+        position: absolute;
+        font-size: 50px;
+        animation: rise 6s infinite ease-in;
+      }
+
+      .poop:nth-child(1) {
+        left: 20%;
+        bottom: -20px;
+        animation-delay: 0s;
+      }
+      .poop:nth-child(2) {
+        left: 50%;
+        bottom: -40px;
+        animation-delay: 2s;
+      }
+      .poop:nth-child(3) {
+        left: 80%;
+        bottom: -30px;
+        animation-delay: 4s;
+      }
+
+      @keyframes rise {
+        0% {
+          transform: translateY(0);
+          opacity: 0.9;
+        }
+        100% {
+          transform: translateY(-300px);
+          opacity: 0;
+        }
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h2>🐥 Happy Day TukTuki 🐥</h2>
+      <p>
+        You are special and loved. Wishing you lots of happiness today and
+        always!
+      </p>
+      <a href="Interactive_BDay_Site.html" class="btn">Open Surprise</a>
+
+      <!-- floating 💩 emojis -->
+      <div class="poop">💩</div>
+      <div class="poop">💩</div>
+      <div class="poop">💩</div>
+    </div>
+  </body>
+</html>
